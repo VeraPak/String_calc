@@ -1,72 +1,69 @@
-public class Calc {
-    static char action;
-    static String[] data;
-    static String result;
-    public static String calc(String input) throws Exception {
+public class Calc extends Main{
+    private static String result;
 
-        if (input.contains(" + ")) {
-            data = input.split(" \\+ ");
-            action = '+';
-        } else if (input.contains(" - ")) {
-            data = input.split(" - ");
-            action = '-';
-        } else if (input.contains(" * ")) {
-            data = input.split(" \\* ");
-            action = '*';
-        } else if (input.contains(" / ")) {
-            data = input.split(" / ");
-            action = '/';
-        }else{
-            throw new Exception("Некорректный знак действия");
+    public static String calc(String input) throws Exception
+    {
+
+        String[] words = input.split("\"");
+        String num1 = words[1];
+
+        if (num1.length() > 10)
+        {
+            throw new Exception();
         }
 
-        if (action == '*' || action == '/') {
-            if (data[1].contains("\"")) throw new Exception("Строчку можно делить или умножать только на число");
+////////////////////////////////////////
+
+        if (input.contains("+") || (input.contains("-")))
+        {
+            String num2 = words[3];
+            if (input.contains("+"))
+            {
+                result = num1 + num2;
+            } else if (input.contains("-"))
+            {
+                result = num1.replace(num2, "");
+            }
         }
 
-        for (int i = 0; i < data.length; i++) {
-            data[i] = data[i].replace("\"", "");
+////////////////////////////////////////
+
+        if (input.contains("*"))
+        {
+            String[] right = input.split(" \\*");
+            String num2 = right[1];
+            num2 = num2.replace(" ", "");
+
+            if (Integer.parseInt(num2) <= 10)
+            {
+                result = num1.repeat(Integer.parseInt(num2));
+            } else {
+                throw new Exception();
+            }
         }
 
-        String a = data[0];
-        String b = data[1];
+////////////////////////////////////////
 
-        if (data.length != 2) {
-            throw new Exception("Не больше двух операторов");
+        if (input.contains("/"))
+        {
+
+            String[] right = input.split("/");
+            String num2 = right[1];
+            num2 = num2.replace(" ", "");
+            int del = num1.length() / Integer.parseInt(num2);
+
+            if (Integer.parseInt(num2) <= 10)
+            {
+                result = num1.substring(0, del);
+            } else {
+                throw new Exception();
+            }
         }
-
-        if (a.length() > 10 || b.length() > 10){
-            throw new Exception("не более 10 значений");
+        if (result.length() <= 40) {
+            System.out.println(result);
+        } else {
+            System.out.println(result.substring(0, 40) + "...");
         }
-
-        switch (action) {
-            case '+':
-                result = a.concat(b);
-                break;
-            case '-':
-                result = a.replace(b, "");
-                break;
-            case '*':
-                int multiplier = Integer.parseInt(b);
-                if (Integer.parseInt(b) <= 10) {
-                    for (int i = 0; i < multiplier; i++) {
-                        result += a;
-                    }
-                }else{
-                    throw new Exception("Введите число до 10");
-                }
-                break;
-
-            case '/':
-                int del = a.length() / Integer.parseInt(b);
-                if (Integer.parseInt(b) <= 10) {
-                    result = a.substring(0, del);
-                } else{
-                    throw new Exception("Введите число до 10");
-                }
-                break;
-            default: throw new Exception("nope");
-        }
-        return (result);
+        return result;
     }
 }
